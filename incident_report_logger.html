@@ -8,26 +8,37 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { width: 100%; overflow-x: hidden; }
 
-    body {
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
       font-family: 'Segoe UI', Arial, sans-serif;
       color: #1a1a2e;
-      min-height: 100vh;
-      background-image: url('NoteGPT_Image_20260608143054.png');
-      
-      
-      background-attachment: fixed;
-      width: 100vw;
-      min-height: 100vh;
       overflow-x: hidden;
-      background-repeat: no-repeat;
     }
 
-    body::before {
-      content: '';
+    .bg-layer {
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: url('NoteGPT_Image_20260608143054.png');
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      z-index: -2;
+    }
+
+    .bg-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       background: rgba(0,0,0,0.45);
-      z-index: 0;
+      z-index: -1;
       pointer-events: none;
     }
 
@@ -321,6 +332,8 @@
   </style>
 </head>
 <body>
+  <div class="bg-layer"></div>
+  <div class="bg-overlay"></div>
 
   <header>
     <div class="header-icons">💻📱</div>
