@@ -145,6 +145,14 @@
       letter-spacing: 0.5px;
       color: rgba(255,255,255,0.9);
     }
+    .format-hint {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
+      color: rgba(255,255,255,0.5);
+      margin-left: 4px;
+    }
 
     input, select, textarea {
       padding: 10px 14px;
@@ -431,13 +439,13 @@
           </div>
 
           <div class="form-group">
-            <label for="incidentDate">Date</label>
-            <input type="text" id="incidentDate" placeholder="00/00/0000" maxlength="10" />
+            <label for="incidentDate">Date <span class="format-hint">(DD/MM/YYYY)</span></label>
+            <input type="text" id="incidentDate" placeholder="e.g. 16/06/2026" maxlength="10" />
           </div>
 
           <div class="form-group">
-            <label for="incidentTime">Time</label>
-            <input type="text" id="incidentTime" placeholder="00:00 AM/PM" maxlength="8" />
+            <label for="incidentTime">Time <span class="format-hint">(HH:MM AM/PM)</span></label>
+            <input type="text" id="incidentTime" placeholder="e.g. 02:45 PM" maxlength="11" />
           </div>
 
           <div class="form-group full">
