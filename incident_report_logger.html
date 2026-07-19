@@ -17,13 +17,13 @@
 
     // ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────────────────
     const firebaseConfig = {
-  apiKey: "AIzaSyCCYoC4ZGihwbMPKvhoZ0MM6J2y8CV8Ni8",
-  authDomain: "incident-report-logger.firebaseapp.com",
-  projectId: "incident-report-logger",
-  storageBucket: "incident-report-logger.firebasestorage.app",
-  messagingSenderId: "728577981545",
-  appId: "1:728577981545:web:64e376ea3c3c3fe1d6b6f8"
-};
+      apiKey:            "PASTE_API_KEY_HERE",
+      authDomain:        "PASTE_AUTH_DOMAIN_HERE",
+      projectId:         "PASTE_PROJECT_ID_HERE",
+      storageBucket:     "PASTE_STORAGE_BUCKET_HERE",
+      messagingSenderId: "PASTE_MESSAGING_SENDER_ID_HERE",
+      appId:             "PASTE_APP_ID_HERE"
+    };
     // ─────────────────────────────────────────────────────────────────────────
 
     const app  = initializeApp(firebaseConfig);
@@ -72,7 +72,10 @@
         document.getElementById('regBtn').disabled = true;
         await createUserWithEmailAndPassword(auth, email, pass);
       } catch (e) {
-        err.textContent = '⚠️ ' + friendlyError(e.code);
+        console.log('FULL ERROR:', e);
+        console.log('ERROR CODE:', e.code);
+        console.log('ERROR MESSAGE:', e.message);
+        err.textContent = '⚠️ ' + (e.code || e.message || 'Unknown error');
         err.classList.add('show');
       } finally {
         document.getElementById('regBtn').textContent = 'Create Account';
