@@ -15,16 +15,14 @@
              orderBy, query, where, serverTimestamp }
       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────────────────
- const firebaseConfig = {
-  apiKey: "AIzaSyCCYoC4ZGihwbMPKvhoZ0MM6J2y8CV8Ni8",
-  authDomain: "incident-report-logger.firebaseapp.com",
-  projectId: "incident-report-logger",
-  storageBucket: "incident-report-logger.firebasestorage.app",
-  messagingSenderId: "728577981545",
-  appId: "1:728577981545:web:64e376ea3c3c3fe1d6b6f8"
-};
-    // ─────────────────────────────────────────────────────────────────────────
+    const firebaseConfig = {
+      apiKey: "AIzaSyCCYoC4ZGihwbMPKvhoZ0MM6J2y8CVBNi8",
+      authDomain: "incident-report-logger.firebaseapp.com",
+      projectId: "incident-report-logger",
+      storageBucket: "incident-report-logger.firebasestorage.app",
+      messagingSenderId: "728577981545",
+      appId: "1:728577981545:web:64e376ea3c3c3fe1d6b6f8"
+    };
 
     const app  = initializeApp(firebaseConfig);
     const auth = getAuth(app);
