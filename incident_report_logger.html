@@ -148,8 +148,17 @@
         const hour12 = hour % 12 || 12;
         const displayTime = `${hour12}:${min} ${ampm}`;
 
+        // Generate unique incident ID: IRL-YYYYMMDD-XXXX
+        const now = new Date();
+        const datePart = now.getFullYear().toString() +
+          String(now.getMonth()+1).padStart(2,'0') +
+          String(now.getDate()).padStart(2,'0');
+        const randPart = Math.random().toString(36).substring(2,6).toUpperCase();
+        const incidentId = `IRL-${datePart}-${randPart}`;
+
         await addDoc(collection(db, 'incidents'), {
           uid: currentUser.uid,
+          incidentId,
           name, type,
           date: displayDate,
           time: displayTime,
@@ -157,7 +166,10 @@
           createdAt: serverTimestamp()
         });
 
-        showToast('✅ Report saved successfully');
+        showToast('✅ Report saved! ID: ' + incidentId);
+        // Show ID popup
+        document.getElementById('generatedId').textContent = incidentId;
+        document.getElementById('idPopup').classList.add('show');
         resetForm();
       } catch (e) {
         err.textContent = '⚠️ Failed to save. Check your connection.';
@@ -200,8 +212,12 @@
           const r = doc.data();
           uniqueTypes.add(r.type);
           const tr = document.createElement('tr');
+          tr.setAttribute('data-id', r.incidentId || '');
+          tr.setAttribute('data-date', r.date || '');
+          tr.setAttribute('data-type', (r.type || '').toLowerCase());
           tr.innerHTML = `
             <td style="color:rgba(255,255,255,0.4);font-weight:700;">${index}</td>
+            <td><span class="id-badge">${escHtml(r.incidentId || 'N/A')}</span></td>
             <td><strong>${escHtml(r.name)}</strong></td>
             <td><span class="badge ${badgeClass(r.type)}">${escHtml(r.type)}</span></td>
             <td>${escHtml(r.date)}</td>
@@ -493,10 +509,110 @@
 
     footer { position: relative; z-index: 10; text-align: center; padding: 22px; font-size: 12px; color: rgba(255,255,255,0.3); }
 
-    @media (max-width: 600px) {
+    /* ── INCIDENT ID BADGE ── */
+    .id-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      background: rgba(230,57,70,0.2);
+      border: 1px solid rgba(230,57,70,0.4);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ff8a94;
+      font-family: monospace;
+      white-space: nowrap;
+    }
+
+    /* ── ID POPUP ── */
+    .id-popup-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+    }
+    .id-popup-overlay.show {
+      display: flex;
+    }
+    .id-popup-box {
+      background: rgba(15,15,25,0.97);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 36px 32px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    }
+    .id-popup-icon { font-size: 40px; margin-bottom: 12px; }
+    .id-popup-box h3 { color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 10px; font-family: 'Segoe UI', Arial, sans-serif; }
+    .id-popup-box p { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 16px; font-family: 'Segoe UI', Arial, sans-serif; }
+    .id-popup-code {
+      background: rgba(230,57,70,0.15);
+      border: 2px solid #e63946;
+      border-radius: 8px;
+      padding: 14px 20px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #ff8a94;
+      font-family: monospace;
+      letter-spacing: 2px;
+      margin-bottom: 14px;
+    }
+    .id-popup-note {
+      font-size: 12px !important;
+      color: rgba(255,255,255,0.4) !important;
+      margin-bottom: 20px !important;
+    }
+
+    @media (max-width: 768px) {
       .form-grid { grid-template-columns: 1fr; }
       .stats-bar { flex-direction: column; }
+
+      /* Fix header on mobile */
+      header {
+        flex-wrap: wrap;
+        padding: 12px 16px;
+        gap: 8px;
+      }
+      .header-left {
+        width: 100%;
+        flex: none;
+      }
+      .header-right {
+        width: 100%;
+        flex: none;
+        justify-content: space-between;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding-top: 8px;
+      }
+      .user-pill {
+        font-size: 11px;
+        max-width: 70%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .logout-btn {
+        flex-shrink: 0;
+      }
       header h1 { font-size: 13px; }
+
+      /* Remove heavy blur effects on mobile for better performance */
+      .card, .auth-box, .stat-box, header, .card-header, .auth-group input,
+      input[type="text"], input[type="date"], input[type="time"], select, textarea,
+      .toast, .bg-overlay {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+      .card { background: rgba(15,15,25,0.85) !important; }
+      .auth-box { background: rgba(15,15,25,0.88) !important; }
+      .stat-box { background: rgba(15,15,25,0.85) !important; }
+      header { background: rgba(5,5,15,0.92) !important; }
+      .card-header { background: rgba(5,5,15,0.85) !important; }
+      .bg-overlay { background: rgba(0,0,0,0.6) !important; }
     }
   </style>
 </head>
@@ -693,6 +809,7 @@
               <thead>
                 <tr>
                   <th>#</th>
+                  <th>Incident ID</th>
                   <th>Reporter Name</th>
                   <th>Incident Type</th>
                   <th>Date</th>
@@ -707,6 +824,46 @@
       </div>
 
     </main>
+      <!-- INCIDENT TRACKER CARD -->
+      <div class="card">
+        <div class="card-header">🔍 Incident Tracker</div>
+        <div class="card-body">
+          <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-bottom:16px;">Search your submitted reports by Incident ID, date, or incident type.</p>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Search by Incident ID</label>
+              <input type="text" id="searchId" placeholder="e.g. IRL-20260720-A3F2" oninput="filterReports()" />
+            </div>
+            <div class="form-group">
+              <label>Filter by Incident Type</label>
+              <input type="text" id="searchType" placeholder="e.g. M-Pesa Fraud, Phishing..." oninput="filterReports()" />
+            </div>
+            <div class="form-group">
+              <label>Filter by Date</label>
+              <input type="date" id="searchDate" oninput="filterReports()" style="color-scheme:dark;" />
+            </div>
+            <div class="form-group" style="display:flex;align-items:flex-end;">
+              <button class="btn btn-secondary" onclick="clearFilters()" style="width:100%;">Clear Filters</button>
+            </div>
+          </div>
+          <div id="trackerResult" style="margin-top:14px;font-size:13px;color:rgba(255,255,255,0.5);"></div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ID POPUP -->
+    <div class="id-popup-overlay" id="idPopup">
+      <div class="id-popup-box">
+        <div class="id-popup-icon">🔐</div>
+        <h3>Report Submitted!</h3>
+        <p>Your incident has been saved. Here is your unique Incident ID:</p>
+        <div class="id-popup-code" id="generatedId"></div>
+        <p class="id-popup-note">Please save this ID. You can use it to track or search for this specific report later.</p>
+        <button class="auth-submit" onclick="document.getElementById('idPopup').classList.remove('show')">Got it</button>
+      </div>
+    </div>
+
     <footer>Cybersecurity Incident Report Logger &mdash; All rights reserved &copy; 2026</footer>
   </div>
 
@@ -748,6 +905,59 @@
       if (type.includes('Social Media') || type.includes('Extortion') || type.includes('Fake Online') || type.includes('Identity')) return 'badge-social';
       if (type.includes('Data') || type.includes('Leak') || type.includes('Privacy')) return 'badge-data';
       return 'badge-other';
+    }
+
+    // ── FILTER / TRACKER ─────────────────────────────────────────────────────
+    function filterReports() {
+      const idFilter   = document.getElementById('searchId').value.trim().toLowerCase();
+      const typeFilter = document.getElementById('searchType').value.trim().toLowerCase();
+      const dateFilter = document.getElementById('searchDate').value;
+
+      const rows = document.querySelectorAll('#logBody tr');
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        const rowId   = (row.getAttribute('data-id') || '').toLowerCase();
+        const rowDate = row.getAttribute('data-date') || '';
+        const rowType = (row.getAttribute('data-type') || '').toLowerCase();
+
+        // Convert date filter from YYYY-MM-DD to DD/MM/YYYY for comparison
+        let dateMatch = true;
+        if (dateFilter) {
+          const [y,m,d] = dateFilter.split('-');
+          const formatted = `${d}/${m}/${y}`;
+          dateMatch = rowDate === formatted;
+        }
+
+        const idMatch   = !idFilter   || rowId.includes(idFilter);
+        const typeMatch = !typeFilter || rowType.includes(typeFilter);
+
+        if (idMatch && typeMatch && dateMatch) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      const result = document.getElementById('trackerResult');
+      const hasFilter = idFilter || typeFilter || dateFilter;
+      if (hasFilter) {
+        result.textContent = visibleCount === 0
+          ? '⚠️ No reports matched your search.'
+          : `✅ ${visibleCount} report${visibleCount === 1 ? '' : 's'} found.`;
+      } else {
+        result.textContent = '';
+        rows.forEach(row => row.style.display = '');
+      }
+    }
+
+    function clearFilters() {
+      document.getElementById('searchId').value = '';
+      document.getElementById('searchType').value = '';
+      document.getElementById('searchDate').value = '';
+      document.getElementById('trackerResult').textContent = '';
+      document.querySelectorAll('#logBody tr').forEach(r => r.style.display = '');
     }
 
     function escHtml(str) {
