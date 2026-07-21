@@ -793,6 +793,32 @@
         </div>
       </div>
 
+      <!-- INCIDENT TRACKER CARD -->
+      <div class="card">
+        <div class="card-header">🔍 Incident Tracker</div>
+        <div class="card-body">
+          <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-bottom:16px;">Search your submitted reports by Incident ID, date, or incident type.</p>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Search by Incident ID</label>
+              <input type="text" id="searchId" placeholder="e.g. IRL-20260720-A3F2" oninput="filterReports()" />
+            </div>
+            <div class="form-group">
+              <label>Filter by Incident Type</label>
+              <input type="text" id="searchType" placeholder="e.g. M-Pesa Fraud, Phishing..." oninput="filterReports()" />
+            </div>
+            <div class="form-group">
+              <label>Filter by Date</label>
+              <input type="date" id="searchDate" oninput="filterReports()" style="color-scheme:dark;" />
+            </div>
+            <div class="form-group" style="display:flex;align-items:flex-end;">
+              <button class="btn btn-secondary" onclick="clearFilters()" style="width:100%;">Clear Filters</button>
+            </div>
+          </div>
+          <div id="trackerResult" style="margin-top:14px;font-size:13px;color:rgba(255,255,255,0.5);"></div>
+        </div>
+      </div>
+
       <!-- LOG TABLE CARD -->
       <div class="card">
         <div class="card-header">
@@ -824,32 +850,6 @@
       </div>
 
     </main>
-      <!-- INCIDENT TRACKER CARD -->
-      <div class="card">
-        <div class="card-header">🔍 Incident Tracker</div>
-        <div class="card-body">
-          <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-bottom:16px;">Search your submitted reports by Incident ID, date, or incident type.</p>
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Search by Incident ID</label>
-              <input type="text" id="searchId" placeholder="e.g. IRL-20260720-A3F2" oninput="filterReports()" />
-            </div>
-            <div class="form-group">
-              <label>Filter by Incident Type</label>
-              <input type="text" id="searchType" placeholder="e.g. M-Pesa Fraud, Phishing..." oninput="filterReports()" />
-            </div>
-            <div class="form-group">
-              <label>Filter by Date</label>
-              <input type="date" id="searchDate" oninput="filterReports()" style="color-scheme:dark;" />
-            </div>
-            <div class="form-group" style="display:flex;align-items:flex-end;">
-              <button class="btn btn-secondary" onclick="clearFilters()" style="width:100%;">Clear Filters</button>
-            </div>
-          </div>
-          <div id="trackerResult" style="margin-top:14px;font-size:13px;color:rgba(255,255,255,0.5);"></div>
-        </div>
-      </div>
-
     </main>
 
     <!-- ID POPUP -->
